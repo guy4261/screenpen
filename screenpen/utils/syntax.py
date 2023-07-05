@@ -4,8 +4,9 @@
 
 import sys
 
-from PyQt5.QtCore import QRegExp
-from PyQt5.QtGui import QColor, QTextCharFormat, QFont, QSyntaxHighlighter
+from PyQt6.QtCore import QRegularExpression
+from PyQt6.QtGui import QColor, QTextCharFormat, QFont, QSyntaxHighlighter
+
 
 def format(color, style=''):
     """Return a QTextCharFormat with the given attributes.
@@ -16,7 +17,7 @@ def format(color, style=''):
     _format = QTextCharFormat()
     _format.setForeground(_color)
     if 'bold' in style:
-        _format.setFontWeight(QFont.Bold)
+        _format.setFontWeight(75)  # (QFont.Bold)
     if 'italic' in style:
         _format.setFontItalic(True)
 
@@ -73,8 +74,8 @@ class PythonHighlighter (QSyntaxHighlighter):
         # Multi-line strings (expression, flag, style)
         # FIXME: The triple-quotes in these two lines will mess up the
         # syntax highlighting from this point onward
-        self.tri_single = (QRegExp("'''"), 1, STYLES['string2'])
-        self.tri_double = (QRegExp('"""'), 2, STYLES['string2'])
+        self.tri_single = (QRegularExpression("'''"), 1, STYLES['string2'])
+        self.tri_double = (QRegularExpression('"""'), 2, STYLES['string2'])
 
         rules = []
 
@@ -110,8 +111,8 @@ class PythonHighlighter (QSyntaxHighlighter):
             (r'\b[+-]?[0-9]+(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?\b', 0, STYLES['numbers']),
         ]
 
-        # Build a QRegExp for each pattern
-        self.rules = [(QRegExp(pat), index, fmt)
+        # Build a QRegularExpression for each pattern
+        self.rules = [(QRegularExpression(pat), index, fmt)
             for (pat, index, fmt) in rules]
 
 
@@ -139,7 +140,7 @@ class PythonHighlighter (QSyntaxHighlighter):
 
     def match_multiline(self, text, delimiter, in_state, style):
         """Do highlighting of multi-line strings. ``delimiter`` should be a
-        ``QRegExp`` for triple-single-quotes or triple-double-quotes, and
+        ``QRegularExpression`` for triple-single-quotes or triple-double-quotes, and
         ``in_state`` should be a unique integer to represent the corresponding
         state changes when inside those strings. Returns True if we're still
         inside a multi-line string when this function is finished.
